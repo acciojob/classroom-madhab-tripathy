@@ -3,7 +3,6 @@ import org.apache.tomcat.util.digester.ArrayStack;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 @Repository
@@ -23,15 +22,25 @@ public class StudentRepository {
     // Pair an existing student and teacher: PUT /students/add-student-teacher-pair Pass student name and teacher name as request parameters
     // Return success message wrapped in a ResponseEntity
     public void makeStudentTeacherPair(String std_name, String tch_name){
-        if(studentHashMap.containsKey(std_name) && teacherHashMap.containsKey(tch_name)){
-            List<String> std_list = new ArrayList<>();
-            // if is there an existing teacher in the teacherStudentHashMap than
-            // get the list add student into it
-            if(teacherStudentHashMap.containsKey(tch_name)){
-                std_list = teacherStudentHashMap.get(tch_name);
-            }
-            std_list.add(std_name);
-            teacherStudentHashMap.put(tch_name,std_list);
+//        if(studentHashMap.containsKey(std_name) && teacherHashMap.containsKey(tch_name)){
+//            List<String> std_list = new ArrayList<>();
+//            // if is there an existing teacher in the teacherStudentHashMap than
+//            // get the list add student into it
+//            if(teacherStudentHashMap.containsKey(tch_name)){
+//                std_list = teacherStudentHashMap.get(tch_name);
+//            }
+//            std_list.add(std_name);
+//            teacherStudentHashMap.put(tch_name,std_list);
+//        }
+        List<String> studentsList = new ArrayList<>();
+        if(teacherStudentHashMap.containsKey(tch_name)){
+            studentsList = teacherStudentHashMap.get(tch_name);
+            studentsList.add(std_name);
+            teacherStudentHashMap.put(tch_name, studentsList);
+        }
+        else{
+            studentsList.add(std_name);
+            teacherStudentHashMap.put(tch_name,studentsList);
         }
     }
     public Student findStudentByName(String std_name){
@@ -65,19 +74,12 @@ public class StudentRepository {
     }
     // MUST delete the respected student's from student map and teacher map and teacherStudent map
     public void deleteAllTeachers(){
-        HashSet<String> studentSet = new HashSet<>();
-        for(String director : teacherStudentHashMap.keySet()){
-            studentSet.addAll(teacherStudentHashMap.get(director));
+        for(List<String> ls: teacherStudentHashMap.values()){
+            for (String studentList : ls){
+                studentHashMap.remove(studentList);
+            }
         }
-        for (String movie : studentSet){
-            studentHashMap.remove(movie);
-        }
-//        for(List<String> ls: teacherStudentHashMap.values()){
-//            for (String studentList : ls){
-//                studentHashMap.remove(studentList);
-//            }
-//        }
-//        teacherHashMap.clear();
-//        teacherStudentHashMap.clear();
+        teacherHashMap.clear();
+        teacherStudentHashMap.clear();
     }
 }
