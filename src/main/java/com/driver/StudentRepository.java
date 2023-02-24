@@ -3,6 +3,7 @@ import org.apache.tomcat.util.digester.ArrayStack;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 @Repository
@@ -64,12 +65,19 @@ public class StudentRepository {
     }
     // MUST delete the respected student's from student map and teacher map and teacherStudent map
     public void deleteAllTeachers(){
-        for(List<String> ls: teacherStudentHashMap.values()){
-            for (String studentList : ls){
-                studentHashMap.remove(studentList);
-            }
+        HashSet<String> studentSet = new HashSet<>();
+        for(String director : teacherStudentHashMap.keySet()){
+            studentSet.addAll(teacherStudentHashMap.get(director));
         }
-        teacherHashMap.clear();
-        teacherStudentHashMap.clear();
+        for (String movie : studentSet){
+            studentHashMap.remove(movie);
+        }
+//        for(List<String> ls: teacherStudentHashMap.values()){
+//            for (String studentList : ls){
+//                studentHashMap.remove(studentList);
+//            }
+//        }
+//        teacherHashMap.clear();
+//        teacherStudentHashMap.clear();
     }
 }
