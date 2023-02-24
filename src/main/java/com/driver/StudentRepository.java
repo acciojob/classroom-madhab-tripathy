@@ -64,10 +64,9 @@ public class StudentRepository {
     }
     // MUST delete the respected student's from student map and teacher map and teacherStudent map
     public void deleteAllTeachers(){
-        for(String teacher : teacherStudentHashMap.keySet()){
-            List<String> studentList = teacherStudentHashMap.get(teacher);
-            for(int i  = 0; i < studentList.size(); i++){
-                studentHashMap.remove(studentList.get(i));
+        for(List<String> ls: teacherStudentHashMap.values()){
+            for (String studentList : ls){
+                studentHashMap.remove(studentList);
             }
         }
         teacherHashMap.clear();
