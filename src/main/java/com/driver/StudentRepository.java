@@ -7,9 +7,15 @@ import java.util.List;
 import java.util.ArrayList;
 @Repository
 public class StudentRepository {
-    private HashMap<String, Student> studentHashMap = new HashMap<>();
-    private HashMap<String, Teacher> teacherHashMap = new HashMap<>();
-    private HashMap<String,List<String>> teacherStudentHashMap = new HashMap<>();
+    HashMap<String, Student> studentHashMap;
+    HashMap<String, Teacher> teacherHashMap;
+    HashMap<String,List<String>> teacherStudentHashMap;
+
+    public StudentRepository() {
+        this.studentHashMap = new HashMap<>();
+        this.teacherHashMap = new HashMap<>();
+        this.teacherStudentHashMap = new HashMap<>();
+    }
 
     // Add a Student: POST /students/add-student Pass the Student object as request body
     // Return success message wrapped in a ResponseEntity
@@ -22,25 +28,15 @@ public class StudentRepository {
     // Pair an existing student and teacher: PUT /students/add-student-teacher-pair Pass student name and teacher name as request parameters
     // Return success message wrapped in a ResponseEntity
     public void makeStudentTeacherPair(String std_name, String tch_name){
-//        if(studentHashMap.containsKey(std_name) && teacherHashMap.containsKey(tch_name)){
-//            List<String> std_list = new ArrayList<>();
-//            // if is there an existing teacher in the teacherStudentHashMap than
-//            // get the list add student into it
-//            if(teacherStudentHashMap.containsKey(tch_name)){
-//                std_list = teacherStudentHashMap.get(tch_name);
-//            }
-//            std_list.add(std_name);
-//            teacherStudentHashMap.put(tch_name,std_list);
-//        }
-        List<String> studentsList = new ArrayList<>();
-        if(teacherStudentHashMap.containsKey(tch_name)){
-            studentsList = teacherStudentHashMap.get(tch_name);
-            studentsList.add(std_name);
-            teacherStudentHashMap.put(tch_name, studentsList);
-        }
-        else{
-            studentsList.add(std_name);
-            teacherStudentHashMap.put(tch_name,studentsList);
+        if(studentHashMap.containsKey(std_name) && teacherHashMap.containsKey(tch_name)){
+            List<String> std_list = new ArrayList<>();
+            // if is there an existing teacher in the teacherStudentHashMap than
+            // get the list add student into it
+            if(teacherStudentHashMap.containsKey(tch_name)){
+                std_list = teacherStudentHashMap.get(tch_name);
+            }
+            std_list.add(std_name);
+            teacherStudentHashMap.put(tch_name,std_list);
         }
     }
     public Student findStudentByName(String std_name){
@@ -74,12 +70,8 @@ public class StudentRepository {
     }
     // MUST delete the respected student's from student map and teacher map and teacherStudent map
     public void deleteAllTeachers(){
-        for(List<String> ls: teacherStudentHashMap.values()){
-            for (String studentList : ls){
-                studentHashMap.remove(studentList);
-            }
+        for(String name : teacherHashMap.keySet()){
+            deleteTeacherByName(name);
         }
-        teacherHashMap.clear();
-        teacherStudentHashMap.clear();
     }
 }
