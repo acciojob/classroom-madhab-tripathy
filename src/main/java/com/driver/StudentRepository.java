@@ -46,11 +46,7 @@ public class StudentRepository {
     }
     // find student list with their respected teacher
     public List<String> findStudentsByTeacherName(String tch_name){
-        List<String> studentList = new ArrayList<>();
-        if(teacherStudentHashMap.containsKey(tch_name)){
-            studentList = teacherStudentHashMap.get(tch_name);
-        }
-        return studentList;
+        return teacherStudentHashMap.get(tch_name);
     }
     // Find all Students from student map
     public List<String> findAllStudents(){
@@ -59,22 +55,16 @@ public class StudentRepository {
     // delete teacher by name
     public void deleteTeacherByName(String tch_name){
         List<String> studentList = teacherStudentHashMap.get(tch_name);
-        for(int i = 0; i < studentList.size(); i++){
-            studentList.remove(studentList.get(i));
+        for(String student : studentList){
+            studentHashMap.remove(student);
         }
         teacherHashMap.remove(tch_name);
         teacherStudentHashMap.remove(tch_name);
     }
     // MUST delete the respected student's from student map and teacher map and teacherStudent map
     public void deleteAllTeachers(){
-        List<String> l = new ArrayList<>();
-        for (String s : teacherStudentHashMap.keySet()) {
-            l.addAll(teacherStudentHashMap.get(s));
-        }
-        teacherStudentHashMap.clear();
-        teacherHashMap.clear();
-        for (String s : l) {
-            studentHashMap.remove(s);
+        for(String name : teacherHashMap.keySet()){
+            deleteTeacherByName(name);
         }
     }
 }
