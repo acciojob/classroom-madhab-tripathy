@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.ArrayList;
 @Repository
 public class StudentRepository {
-    HashMap<String, Student> studentHashMap;
-    HashMap<String, Teacher> teacherHashMap;
-    HashMap<String,List<String>> teacherStudentHashMap;
+    private HashMap<String, Student> studentHashMap;
+    private HashMap<String, Teacher> teacherHashMap;
+    private HashMap<String,List<String>> teacherStudentHashMap;
 
     public StudentRepository() {
         this.studentHashMap = new HashMap<>();
@@ -28,16 +28,15 @@ public class StudentRepository {
     // Pair an existing student and teacher: PUT /students/add-student-teacher-pair Pass student name and teacher name as request parameters
     // Return success message wrapped in a ResponseEntity
     public void makeStudentTeacherPair(String std_name, String tch_name){
-        if(studentHashMap.containsKey(std_name) && teacherHashMap.containsKey(tch_name)){
-            List<String> std_list = new ArrayList<>();
-            // if is there an existing teacher in the teacherStudentHashMap than
-            // get the list add student into it
-            if(teacherStudentHashMap.containsKey(tch_name)){
-                std_list = teacherStudentHashMap.get(tch_name);
-            }
-            std_list.add(std_name);
-            teacherStudentHashMap.put(tch_name,std_list);
+        List<String> std_list = new ArrayList<>();
+        // if is there an existing teacher in the teacherStudentHashMap than
+        // get the list add student into it
+        if(teacherStudentHashMap.containsKey(tch_name)){
+            std_list = teacherStudentHashMap.get(tch_name);
         }
+        std_list.add(std_name);
+        teacherStudentHashMap.put(tch_name,std_list);
+
     }
     public Student findStudentByName(String std_name){
         return  studentHashMap.get(std_name);
@@ -59,14 +58,12 @@ public class StudentRepository {
     }
     // delete teacher by name
     public void deleteTeacherByName(String tch_name){
-        if(teacherStudentHashMap.containsKey(tch_name)){
-            List<String> studentList = teacherStudentHashMap.get(tch_name);
-            for(int i = 0; i < studentList.size(); i++){
-                studentList.remove(studentList.get(i));
-            }
-            teacherHashMap.remove(tch_name);
-            teacherStudentHashMap.remove(tch_name);
+        List<String> studentList = teacherStudentHashMap.get(tch_name);
+        for(int i = 0; i < studentList.size(); i++){
+            studentList.remove(studentList.get(i));
         }
+        teacherHashMap.remove(tch_name);
+        teacherStudentHashMap.remove(tch_name);
     }
     // MUST delete the respected student's from student map and teacher map and teacherStudent map
     public void deleteAllTeachers(){
